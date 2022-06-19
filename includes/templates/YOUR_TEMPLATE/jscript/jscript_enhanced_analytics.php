@@ -8,8 +8,6 @@
  * @version $Id: jscript_analytics_and_adwords.php 2018-06-25 20:47:36Z kanine $
  */
 
-LogThis('Start: ' . __FILE__);
-
 if ( defined('GTAG_ANALYTICS') ) { ?>
   <!-- Global Site Tag (gtag.js) - Google Analytics -->
   <script async src="https://www.googletagmanager.com/gtag/js?id=<?php echo GTAG_ANALYTICS; ?>"></script>
@@ -30,7 +28,6 @@ if ( defined('GTAG_ANALYTICS') ) { ?>
     // global $analytics, $cID;
     $gtagCustomerID = ( isset($_SESSION['customer_id']) ) ? "customerID#".$_SESSION['customer_id'] : "guest";
     $analytics = $_SESSION['analytics'];
-    // LogThis('Analytics Array: ' . print_r($analytics,true));
     if ( $analytics['action'] == 'Checkout Success' && count($analytics['items']) >= 1 ): ?>
 
       <script>
@@ -48,9 +45,7 @@ if ( defined('GTAG_ANALYTICS') ) { ?>
       
         $isFirst = true;
         $gtagItemTracking = '';
-        // LogThis('Items: ' . print_r($analytics['items'],true));
         foreach ( $analytics['items'] as $item ) {
-          // LogThis('This Item: ' . print_r($item,true));
           $thisGtag .= ( $isFirst ? '' : ',') . PHP_EOL;
           $thisGtag .= '{"item_id": "' . $item['item_id'] . '",' . PHP_EOL;
           $thisGtag .= '"item_name": "' . addslashes($item['item_name']) . '",' . PHP_EOL;
@@ -64,8 +59,6 @@ if ( defined('GTAG_ANALYTICS') ) { ?>
           $isFirst = false;
         }
         $thisGtag .= ']});' . PHP_EOL;
-
-        LogThis("Analytics GTAG Output: " . $thisGtag);
 
         echo $thisGtag;
 
