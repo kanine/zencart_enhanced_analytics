@@ -11,7 +11,6 @@ class zcObserverEnhancedAnalytics extends base {
 
   function __construct() {
       global $zco_notifier;
-      LogThis('Start: ' . __METHOD__);
       $zco_notifier->attach($this, array('NOTIFY_HEADER_TIMEOUT'));
 
       $this->attach($this, array(
@@ -22,7 +21,6 @@ class zcObserverEnhancedAnalytics extends base {
 
   function getID() {
       $id = '';
-      LogThis('Start: ' . __METHOD__);
       if (isset($_REQUEST['products_id'])) {
           if (is_array($_REQUEST['products_id'])) {  $id = explode(":", $_REQUEST['products_id'][0]);
           } else {  $id = explode(":", $_REQUEST['products_id']);  }
@@ -40,7 +38,6 @@ class zcObserverEnhancedAnalytics extends base {
     
  function getCatString($id) {
   global $db, $cPath ;
-  LogThis('Start: ' . __METHOD__);
   $masterCat = zen_get_categories_name_from_product($id) ;
   $catTxt = '';
      $i = 0 ; $flag = 0 ;
@@ -59,7 +56,6 @@ class zcObserverEnhancedAnalytics extends base {
  }   
     
  function addProductItemsStr() { 
-    LogThis('Start: ' . __METHOD__);
     $itemsStr = "" ;  $i=0 ; 
     $products = $_SESSION['cart']->get_products(); 
     if(is_array($products)) { 
@@ -86,16 +82,13 @@ class zcObserverEnhancedAnalytics extends base {
     return $itemsStr ;           
   }
 
-  /////////////////////////////          
   function update(&$callingClass, $notifier, $paramsArray) {
     global $db, $analytics;
 
-    LogThis('Start: ' . __METHOD__ . ' ' . $notifier);
     switch ($notifier) {
       case 'NOTIFY_HEADER_START_CHECKOUT_SUCCESS': //  All Checkout complete/successful 
         $order_summary = $_SESSION['order_summary'];
         
-        // LogThis('Order Summary $_SESSION: ' . print_r($order_summary,true));
 
         $coupon = isset($order_summary['coupon_code']) ? $order_summary['coupon_code'] : "n/a";
         
@@ -118,8 +111,6 @@ class zcObserverEnhancedAnalytics extends base {
         $i = 0 ; 
         
         while (!$items_in_cart->EOF) {
-          
-          // LogThis($items_in_cart->fields);
           
           $variant = $db->Execute("SELECT products_options_values FROM " . TABLE_ORDERS_PRODUCTS_ATTRIBUTES . " WHERE orders_products_id = " . (string)$items_in_cart->fields['orders_products_id']);
           $varTxt = ($variant->fields['products_options_values'] != "") ? $variant->fields['products_options_values']:"n/a";
@@ -146,7 +137,6 @@ class zcObserverEnhancedAnalytics extends base {
       $analytics['action'] = ucwords(strtolower(str_replace("_", " ", $notifyArr[1])));
     }
 
-    // LogThis('Set Analytics Info: ' . print_r($analytics,true));
     $_SESSION['analytics'] = $analytics;
   
   }
