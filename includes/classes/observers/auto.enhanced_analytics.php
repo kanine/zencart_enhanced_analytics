@@ -1,22 +1,16 @@
 <?php 
 /**
  * @package Google Enhanced E-Commerce Analytics
- * @copyright (c) 2015 RodG
- * @copyright Copyright 2003-2017 Zen Cart Development Team
- * @copyright Portions Copyright 2003 osCommerce
- * @license http://www.zen-cart-pro.at/license/2_0.txt GNU Public License V2.0
- * @version $Id: class.ec_analytics.php 2017-12-11  DrByte $
+ * @copyright (c) 2022 bti
+ * @license GNU Public License V2.0
+ * @version $Id: class.enahnced_analytics.php 2022-07-09 kanine $
  */
-class zcObserverEnhancedAnalytics extends base {
+
+ class zcObserverEnhancedAnalytics extends base {
 
   function __construct() {
       global $zco_notifier;
-      $zco_notifier->attach($this, array('NOTIFY_HEADER_TIMEOUT'));
-
-      $this->attach($this, array(
-          // actionable events //
-          'NOTIFY_HEADER_START_CHECKOUT_SUCCESS'
-      ));
+      $this->attach($this, array('NOTIFY_HEADER_START_CHECKOUT_SUCCESS'));
   }
 
   function getID() {
@@ -114,10 +108,12 @@ class zcObserverEnhancedAnalytics extends base {
           
           $variant = $db->Execute("SELECT products_options_values FROM " . TABLE_ORDERS_PRODUCTS_ATTRIBUTES . " WHERE orders_products_id = " . (string)$items_in_cart->fields['orders_products_id']);
           $varTxt = ($variant->fields['products_options_values'] != "") ? $variant->fields['products_options_values']:"n/a";
-          $productDetails = btiGetProductDetails($items_in_cart->fields['products_model']); 
+          
+          // Example Additional Product Details to get a brand name for a product
+          $productDetails = $this->getAdditionalProductDetails($items_in_cart->fields['products_model']); 
           $brandTxt = ( $productDetails ? $productDetails['brand'] : 'Generic' );
           
-          $analytics['items'][] = Array('item_id' => $items_in_cart->fields['products_id'],
+          $analytics['items'][] = array('item_id' => $items_in_cart->fields['products_id'],
                                         'item_name' => $items_in_cart->fields['products_name'],
                                         'item_brand' => $brandTxt,
                                         'item_category' => zen_get_categories_name_from_product($items_in_cart->fields['products_id']),
@@ -140,4 +136,29 @@ class zcObserverEnhancedAnalytics extends base {
     $_SESSION['analytics'] = $analytics;
   
   }
+
+  private function getAdditionalProductDetails($productModel) {
+
+    return false;
+
+    /*
+    global $db;
+
+    $sql = "select barcode, brand, manufacturerCode
+            from another_table
+            WHERE sku = :productModel LIMIT 1";
+
+    $sql = $db->bindVars($sql, ':productModel', $productModel, 'string');
+    
+    $detail = $db->Execute($detail_query);
+
+    return ($detail->RecordCount() > 0) ? $product->fields : false;
+    */
+
+  }
+
+  private function zcLog($stage, $message = '', $doBackTrace = false) {
+    include(DIR_WS_CLASSES . 'vendors/bti/zcLog.php');
+  }
+
 }
