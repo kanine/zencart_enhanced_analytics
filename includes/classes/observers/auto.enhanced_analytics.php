@@ -8,6 +8,9 @@
 
  class zcObserverEnhancedAnalytics extends base {
 
+  public $code = 'enhanced_analytics';
+  private $_logDir = DIR_FS_CATALOG . 'logs/plugins/'; // Change this to preference
+
   function __construct() {
       global $zco_notifier;
       $this->attach($this, array('NOTIFY_HEADER_START_CHECKOUT_SUCCESS'));

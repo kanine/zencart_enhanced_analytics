@@ -1,4 +1,6 @@
  <?php
+ 
+  // A standard method that can be used for logging messages
 
   if ( defined('ISDEBUGLOGGING') && !ISDEBUGLOGGING ) return; // Set this contstant to control logging
 
